@@ -16,7 +16,7 @@ env:
 # Command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
 - pip install -U poetry
-- pip install -U tox-travis 
+- pip install -U tox-travis
 
 
 # Command to run tests, e.g. python setup.py test
@@ -37,7 +37,7 @@ deploy:
   script: poetry publish
   on:
     tags: true
-    repo: {{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}
+    repo: {{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}
     branch: master
     python: 3.6
 {%- endif %}

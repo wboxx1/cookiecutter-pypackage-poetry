@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "{{ cookiecutter.project_name }}"
+name = "{{ cookiecutter.project_slug }}"
 version = "{{ cookiecutter.version }}"
 description = "{{ cookiecutter.project_short_description }}"
 authors = ["{{ cookiecutter.full_name }} <{{ cookiecutter.email }}>"]
@@ -7,11 +7,11 @@ license = "{{ cookiecutter.open_source_license }}"
 
 readme = "README.rst"
 
-repository = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}"
+repository = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
 {% if cookiecutter.document_publisher == 'ReadTheDocs' %}
 homepage = https://{{ cookiecutter.project_slug | replace("_", "-") }}.readthedocs.io.
 {% else %}
-homepage = "https://{{ cookiecutter.github_username }}.github.io/{{ cookiecutter.project_name }}"
+homepage = "https://{{ cookiecutter.github_username }}.github.io/{{ cookiecutter.project_slug }}"
 {%- endif %}
 
 packages = [

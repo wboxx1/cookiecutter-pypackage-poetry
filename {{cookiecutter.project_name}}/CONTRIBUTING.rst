@@ -62,7 +62,7 @@ Ready to contribute? Here's how to set up `{{ cookiecutter.project_name }}` for 
 1. Fork the `{{ cookiecutter.project_name }}` repo on GitHub.
 2. Clone your fork locally::
 
-    $ git clone git@github.com:your_name_here/{{ cookiecutter.project_name }}.git
+    $ git clone git@github.com:your_name_here/{{ cookiecutter.project_slug }}.git
 
 3. Install your local copy into a virtualenv using poetry. Assuming you have poetry installed, this is how you set up your fork for local development::
 

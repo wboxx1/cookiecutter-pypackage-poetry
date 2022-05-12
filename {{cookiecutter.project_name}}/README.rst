@@ -8,13 +8,13 @@
         :target: https://pypi.python.org/pypi/{{ cookiecutter.project_slug }}
 
 {% if cookiecutter.use_pypi_deployment_with_travis -%}
-.. image:: https://img.shields.io/travis/{{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}.svg
-        :target: https://travis-ci.org/{{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}
+.. image:: https://img.shields.io/travis/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}.svg
+        :target: https://travis-ci.org/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}
 {%- endif %}
 
 {% if cookiecutter.use_pypi_deployment_with_appveyor -%}
 .. image:: https://ci.appveyor.com/api/projects/status/{{ cookiecutter.github_username }}/branch/master?svg=true
-    :target: https://ci.appveyor.com/project/{{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}/branch/master
+    :target: https://ci.appveyor.com/project/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/branch/master
     :alt: Build status on Appveyor
 {%- endif %}
 
@@ -24,8 +24,8 @@
 {%- endif %}
 
 {% if cookiecutter.add_pyup_badge == 'y' %}
-.. image:: https://pyup.io/repos/github/{{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}/shield.svg
-     :target: https://pyup.io/repos/github/{{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}/
+.. image:: https://pyup.io/repos/github/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/shield.svg
+     :target: https://pyup.io/repos/github/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/
      :alt: Updates
 {% endif %}
 
@@ -37,7 +37,7 @@
 {% if cookiecutter.document_publisher == 'ReadTheDocs' %}
 * Documentation: https://{{ cookiecutter.project_slug | replace("_", "-") }}.readthedocs.io.
 {% else %}
-* Documentation: https://{{ cookiecutter.github_username}}.github.io/{{ cookiecutter.project_name }}
+* Documentation: https://{{ cookiecutter.github_username}}.github.io/{{ cookiecutter.project_slug }}
 {% endif %}
 {% endif %}
 
@@ -46,7 +46,7 @@ Installation:
 
 .. code-block:: console
 
-    $ pip install {{ cookiecutter.project_name }}
+    $ pip install {{ cookiecutter.project_slug }}
 
 Features
 --------
