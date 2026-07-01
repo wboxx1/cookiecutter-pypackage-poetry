@@ -47,5 +47,21 @@ Once you have a copy of the source, you can install into poetry virtual environm
     $ poetry install
 
 
+Developer tools
+---------------
+
+Development uses Poetry for packaging, Just for task shortcuts, Ruff for linting
+and formatting, and Sphinx for documentation.
+
+On Debian or Ubuntu, install the documentation PDF toolchain with:
+
+.. code-block:: console
+
+    $ sudo apt install latexmk texlive-latex-base texlive-latex-recommended texlive-fonts-recommended texlive-latex-extra
+
+Install Poetry using the official installer for your platform, and install Just
+with your operating system package manager.
+
+
 .. _Github repo: https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}
 .. _tarball: https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/tarball/master

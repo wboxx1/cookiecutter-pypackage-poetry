@@ -4,11 +4,11 @@ PyPI Release Checklist
 Before Your First Release
 -------------------------
 
-#. Register the package on PyPI:
+#. Create a PyPI account and API token.
 
     .. code-block:: bash
 
-        python setup.py register
+        poetry config pypi-token.pypi <token>
 
 #. Visit PyPI to make sure it registered.
 
@@ -28,19 +28,19 @@ For Every Release
 
     .. code-block:: bash
 
-        bumpversion minor
+        poetry run bump2version minor
 
 #. Install the package again for local development, but with the new version number:
 
     .. code-block:: bash
 
-        python setup.py develop
+        poetry install
 
 #. Run the tests:
 
     .. code-block:: bash
 
-        tox
+        poetry run tox
 
 #. Push the commit:
 
@@ -62,8 +62,7 @@ For Every Release
 
         .. code-block:: bash
 
-            pip install readme_renderer
-            python setup.py check -r -s
+            poetry run python -m twine check dist/*
 
 #. Edit the release on GitHub (e.g. https://github.com/audreyr/cookiecutter/releases). Paste the release notes into the release's release page, and come up with a title for the release.
 

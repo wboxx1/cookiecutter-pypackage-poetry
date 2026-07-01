@@ -54,8 +54,9 @@ If you are proposing a new feature:
 Get Started!
 ------------
 
-Ready to contribute? Here's how to set up `cookiecutter-pypackage` for local development. Please note this documentation assumes
-you already have `virtualenv` and `Git` installed and ready to go.
+Ready to contribute? Here's how to set up `cookiecutter-pypackage` for local
+development. Please note this documentation assumes you already have Python
+3.10 or newer and Git installed.
 
 1. Fork the `cookiecutter-pypackage` repo on GitHub.
 2. Clone your fork locally::
@@ -65,7 +66,7 @@ you already have `virtualenv` and `Git` installed and ready to go.
     $ cd path_for_the_repo
     $ git clone git@github.com:YOUR_NAME/cookiecutter-pypackage.git
 
-3. Assuming you have virtualenv installed (If you have Python3.5 this should already be there), you can create a new environment for your local development by typing::
+3. Create a virtual environment for local development::
 
   .. code-block:: bash
 
@@ -83,19 +84,18 @@ you already have `virtualenv` and `Git` installed and ready to go.
 
    Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass flake8. Since, this package contains mostly templates the flake should
-   be run for tests directory::
+5. When you're done making changes, check that your changes pass Ruff::
 
   .. code-block:: bash
 
-    $ flake8 ./tests
+    $ ruff check .
 
-6. The next step would be to run the test cases. `cookiecutter-pypackage` uses py.test, you can run PyTest. Before you run pytest you should ensure all dependancies are installed::
+6. The next step would be to run the test cases. Before you run pytest you should ensure all dependencies are installed::
 
   .. code-block:: bash
 
     $ pip install -rrequirements_dev.txt
-    $ py.test ./tests
+    $ pytest ./tests
 
    If you get any errors while installing cryptography package (something like #include <openssl/aes.h>).
    Please update your pip version and try again::
@@ -110,7 +110,7 @@ you already have `virtualenv` and `Git` installed and ready to go.
     $ tox
 
    .. note::
-      If you are missing flake8, pytest and/or tox, just pip install them into your virtualenv.
+      If you are missing Ruff, pytest, and/or tox, install ``requirements_dev.txt`` into your virtualenv.
 
 8. If your contribution is a bug fix or new feature, you may want to add a test to the existing test suite. See section Add a New Test below for details.
 
@@ -135,9 +135,7 @@ Before you submit a pull request, check that it meets these guidelines:
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
 
-3. The pull request should work for Python 2.7, 3.4, 3.5 and 3.6, and for PyPy. Check
-   https://travis-ci.org/audreyr/cookiecutter-pypackage/pull_requests
-   and make sure that the tests pass for all supported Python versions.
+3. The pull request should work for Python 3.10 and newer supported versions.
 
 Add a New Test
 ---------------
@@ -154,7 +152,7 @@ To write and run your new test, follow these steps:
 
 3. Run your test and confirm that your test fails. If your test does not fail, rewrite the test until it fails on the original code::
 
-    $ py.test ./tests
+    $ pytest ./tests
 
 4. (Optional) Run the tests with tox to ensure that the code changes work with different Python versions::
 

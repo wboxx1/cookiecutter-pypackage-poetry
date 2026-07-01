@@ -3,7 +3,6 @@ import shlex
 import os
 import sys
 import subprocess
-import yaml
 import datetime
 from cookiecutter.utils import rmtree
 
@@ -53,10 +52,12 @@ def run_inside_dir(command, dirpath):
         return subprocess.check_call(shlex.split(command))
 
 
-def check_output_inside_dir(command, dirpath):
-    "Run a command from inside a given directory, returning the command output"
+def run_project_tests(dirpath):
+    """Run baked project tests without requiring package installation."""
+    env = os.environ.copy()
+    env["PYTHONPATH"] = os.path.join(dirpath, "src")
     with inside_dir(dirpath):
-        return subprocess.check_output(shlex.split(command))
+        return subprocess.check_call([sys.executable, "-m", "pytest"], env=env)
 
 
 def test_year_compute_in_license_file(cookies):
@@ -69,8 +70,9 @@ def test_year_compute_in_license_file(cookies):
 def project_info(result):
     """Get toplevel dir, project_slug, and project dir from baked cookies"""
     project_path = str(result.project)
-    project_slug = os.path.split(project_path)[-1]
-    project_dir = os.path.join(project_path, project_slug)
+    src_path = os.path.join(project_path, "src")
+    project_slug = os.listdir(src_path)[0]
+    project_dir = os.path.join(project_path, "src", project_slug)
     return project_path, project_slug, project_dir
 
 
@@ -81,8 +83,14 @@ def test_bake_with_defaults(cookies):
         assert result.exception is None
 
         found_toplevel_files = [f.basename for f in result.project.listdir()]
-        assert 'setup.py' in found_toplevel_files
-        assert 'python_boilerplate' in found_toplevel_files
+        assert 'pyproject.toml' in found_toplevel_files
+        assert 'Justfile' in found_toplevel_files
+        assert 'Makefile' not in found_toplevel_files
+        assert 'make.ps1' not in found_toplevel_files
+        assert '.travis.yml' not in found_toplevel_files
+        assert 'appveyor.yml' not in found_toplevel_files
+        assert 'src' in found_toplevel_files
+        assert result.project.join('src/python_boilerplate').isdir()
         assert 'tox.ini' in found_toplevel_files
         assert 'tests' in found_toplevel_files
 
@@ -90,45 +98,22 @@ def test_bake_with_defaults(cookies):
 def test_bake_and_run_tests(cookies):
     with bake_in_temp_dir(cookies) as result:
         assert result.project.isdir()
-        run_inside_dir('python setup.py test', str(result.project)) == 0
+        run_project_tests(str(result.project)) == 0
         print("test_bake_and_run_tests path", str(result.project))
 
 
 def test_bake_withspecialchars_and_run_tests(cookies):
-    """Ensure that a `full_name` with double quotes does not break setup.py"""
+    """Ensure that a `full_name` with double quotes does not break metadata."""
     with bake_in_temp_dir(cookies, extra_context={'full_name': 'name "quote" name'}) as result:
         assert result.project.isdir()
-        run_inside_dir('python setup.py test', str(result.project)) == 0
+        run_project_tests(str(result.project)) == 0
 
 
 def test_bake_with_apostrophe_and_run_tests(cookies):
-    """Ensure that a `full_name` with apostrophes does not break setup.py"""
+    """Ensure that a `full_name` with apostrophes does not break metadata."""
     with bake_in_temp_dir(cookies, extra_context={'full_name': "O'connor"}) as result:
         assert result.project.isdir()
-        run_inside_dir('python setup.py test', str(result.project)) == 0
-
-
-# def test_bake_and_run_travis_pypi_setup(cookies):
-#     # given:
-#     with bake_in_temp_dir(cookies) as result:
-#         project_path = str(result.project)
-#
-#         # when:
-#         travis_setup_cmd = ('python travis_pypi_setup.py'
-#                             ' --repo audreyr/cookiecutter-pypackage --password invalidpass')
-#         run_inside_dir(travis_setup_cmd, project_path)
-#         # then:
-#         result_travis_config = yaml.load(result.project.join(".travis.yml").open())
-#         min_size_of_encrypted_password = 50
-#         assert len(result_travis_config["deploy"]["password"]["secure"]) > min_size_of_encrypted_password
-
-
-def test_bake_without_travis_pypi_setup(cookies):
-    with bake_in_temp_dir(cookies, extra_context={'use_pypi_deployment_with_travis': 'n'}) as result:
-        result_travis_config = yaml.load(result.project.join(".travis.yml").open())
-        assert "deploy" not in result_travis_config
-        assert "python" == result_travis_config["language"]
-        found_toplevel_files = [f.basename for f in result.project.listdir()]
+        run_project_tests(str(result.project)) == 0
 
 
 def test_bake_without_author_file(cookies):
@@ -143,16 +128,12 @@ def test_bake_without_author_file(cookies):
         with open(str(docs_index_path)) as index_file:
             assert 'contributing\n   history' in index_file.read()
 
-        # Check that
-        manifest_path = result.project.join('MANIFEST.in')
-        with open(str(manifest_path)) as manifest_file:
-            assert 'AUTHORS.rst' not in manifest_file.read()
 
-
-def test_make_help(cookies):
+def test_justfile(cookies):
     with bake_in_temp_dir(cookies) as result:
-        output = check_output_inside_dir('make help', str(result.project))
-        assert b"check code coverage quickly with the default Python" in output
+        justfile = result.project.join('Justfile').read()
+        assert "poetry run ruff check src tests" in justfile
+        assert "poetry run tox" in justfile
 
 
 def test_bake_selecting_license(cookies):
@@ -166,13 +147,13 @@ def test_bake_selecting_license(cookies):
     for license, target_string in license_strings.items():
         with bake_in_temp_dir(cookies, extra_context={'open_source_license': license}) as result:
             assert target_string in result.project.join('LICENSE').read()
-            assert license in result.project.join('setup.py').read()
+            assert license in result.project.join('pyproject.toml').read()
 
 
 def test_bake_not_open_source(cookies):
     with bake_in_temp_dir(cookies, extra_context={'open_source_license': 'Not open source'}) as result:
         found_toplevel_files = [f.basename for f in result.project.listdir()]
-        assert 'setup.py' in found_toplevel_files
+        assert 'pyproject.toml' in found_toplevel_files
         assert 'LICENSE' not in found_toplevel_files
         assert 'License' not in result.project.join('README.rst').read()
 
@@ -183,35 +164,16 @@ def test_using_pytest(cookies):
         test_file_path = result.project.join('tests/test_python_boilerplate.py')
         lines = test_file_path.readlines()
         assert "import pytest" in ''.join(lines)
-        # Test the new pytest target
-        run_inside_dir('python setup.py pytest', str(result.project)) == 0
-        # Test the test alias (which invokes pytest)
-        run_inside_dir('python setup.py test', str(result.project)) == 0
+        run_project_tests(str(result.project)) == 0
 
 
 def test_not_using_pytest(cookies):
-    with bake_in_temp_dir(cookies) as result:
+    with bake_in_temp_dir(cookies, extra_context={'use_pytest': 'n'}) as result:
         assert result.project.isdir()
         test_file_path = result.project.join('tests/test_python_boilerplate.py')
         lines = test_file_path.readlines()
         assert "import unittest" in ''.join(lines)
         assert "import pytest" not in ''.join(lines)
-
-
-# def test_project_with_hyphen_in_module_name(cookies):
-#     result = cookies.bake(extra_context={'project_name': 'something-with-a-dash'})
-#     assert result.project is not None
-#     project_path = str(result.project)
-#
-#     # when:
-#     travis_setup_cmd = ('python travis_pypi_setup.py'
-#                         ' --repo audreyr/cookiecutter-pypackage --password invalidpass')
-#     run_inside_dir(travis_setup_cmd, project_path)
-#
-#     # then:
-#     result_travis_config = yaml.load(open(os.path.join(project_path, ".travis.yml")))
-#     assert "secure" in result_travis_config["deploy"]["password"],\
-#         "missing password config in .travis.yml"
 
 
 def test_bake_with_no_console_script(cookies):
@@ -221,25 +183,27 @@ def test_bake_with_no_console_script(cookies):
     found_project_files = os.listdir(project_dir)
     assert "cli.py" not in found_project_files
 
-    setup_path = os.path.join(project_path, 'setup.py')
-    with open(setup_path, 'r') as setup_file:
-        assert 'entry_points' not in setup_file.read()
+    pyproject_path = os.path.join(project_path, 'pyproject.toml')
+    with open(pyproject_path, 'r') as setup_file:
+        assert '[tool.poetry.scripts]' not in setup_file.read()
 
 
 def test_bake_with_console_script_files(cookies):
-    context = {'command_line_interface': 'click'}
+    context = {'command_line_interface': 'Click'}
     result = cookies.bake(extra_context=context)
     project_path, project_slug, project_dir = project_info(result)
     found_project_files = os.listdir(project_dir)
     assert "cli.py" in found_project_files
 
-    setup_path = os.path.join(project_path, 'setup.py')
-    with open(setup_path, 'r') as setup_file:
-        assert 'entry_points' in setup_file.read()
+    pyproject_path = os.path.join(project_path, 'pyproject.toml')
+    with open(pyproject_path, 'r') as setup_file:
+        pyproject = setup_file.read()
+        assert 'click' in pyproject
+        assert '[tool.poetry.scripts]' in pyproject
 
 
 def test_bake_with_console_script_cli(cookies):
-    context = {'command_line_interface': 'click'}
+    context = {'command_line_interface': 'Click'}
     result = cookies.bake(extra_context=context)
     project_path, project_slug, project_dir = project_info(result)
     module_path = os.path.join(project_dir, 'cli.py')

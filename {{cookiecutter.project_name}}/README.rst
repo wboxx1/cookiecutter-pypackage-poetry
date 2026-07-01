@@ -7,17 +7,6 @@
 .. image:: https://img.shields.io/pypi/v/{{ cookiecutter.project_slug }}.svg
         :target: https://pypi.python.org/pypi/{{ cookiecutter.project_slug }}
 
-{% if cookiecutter.use_pypi_deployment_with_travis -%}
-.. image:: https://img.shields.io/travis/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}.svg
-        :target: https://travis-ci.org/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}
-{%- endif %}
-
-{% if cookiecutter.use_pypi_deployment_with_appveyor -%}
-.. image:: https://ci.appveyor.com/api/projects/status/{{ cookiecutter.github_username }}/branch/master?svg=true
-    :target: https://ci.appveyor.com/project/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/branch/master
-    :alt: Build status on Appveyor
-{%- endif %}
-
 .. image:: https://readthedocs.org/projects/{{ cookiecutter.project_slug | replace("_", "-") }}/badge/?version=latest
         :target: https://{{ cookiecutter.project_slug | replace("_", "-") }}.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status

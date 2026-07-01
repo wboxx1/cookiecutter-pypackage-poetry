@@ -1,0 +1,62 @@
+default:
+    just --list
+
+clean: clean-build clean-pyc clean-test
+
+clean-build:
+    rm -rf build/ dist/ .eggs/
+    find . -name '*.egg-info' -exec rm -rf {} +
+    find . -name '*.egg' -exec rm -f {} +
+
+clean-pyc:
+    find . -name '*.pyc' -exec rm -f {} +
+    find . -name '*.pyo' -exec rm -f {} +
+    find . -name '*~' -exec rm -f {} +
+    find . -name '__pycache__' -exec rm -rf {} +
+
+clean-test:
+    rm -rf .tox/ htmlcov/ .pytest_cache/ .ruff_cache/
+    rm -f .coverage
+
+lint:
+    poetry run ruff check src tests
+
+format:
+    poetry run ruff format src tests
+
+test:
+    poetry run {% if cookiecutter.use_pytest == 'y' %}pytest{% else %}python -m unittest{% endif %}
+
+test-all:
+    poetry run tox
+
+coverage:
+    poetry run coverage run --source src/{{ cookiecutter.project_slug }} -m {% if cookiecutter.use_pytest == 'y' %}pytest{% else %}unittest{% endif %}
+    poetry run coverage report -m
+    poetry run coverage html
+
+docs:
+    rm -f docs/{{ cookiecutter.project_slug }}.rst docs/modules.rst
+    poetry run sphinx-apidoc -o docs/ src/{{ cookiecutter.project_slug }}
+    poetry run sphinx-build -b html docs docs/_build/html
+
+servedocs:
+    poetry run watchmedo shell-command --patterns='*.rst' --recursive --command='poetry run sphinx-build -b html docs docs/_build/html' docs
+
+release: dist
+    poetry publish
+
+dist: clean
+    poetry build
+
+install:
+    poetry install
+
+version-major:
+    poetry run bump2version major
+
+version-minor:
+    poetry run bump2version minor
+
+version-patch:
+    poetry run bump2version patch

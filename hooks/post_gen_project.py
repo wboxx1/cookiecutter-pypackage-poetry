@@ -24,11 +24,5 @@ if __name__ == "__main__":
     if "Not open source" == "{{ cookiecutter.open_source_license }}":
         remove_file("LICENSE")
 
-    if "{{ cookiecutter.use_pypi_deployment_with_travis }}" == "n":
-        remove_file(".travis.yml")
-
-    if "{{ cookiecutter.use_pypi_deployment_with_appveyor }}" == "n":
-        remove_file("appveyor.yml")
-
     if "{{ cookiecutter.document_publisher }}" == "ReadTheDocs":
         remove_file("docs/.nojekyll")

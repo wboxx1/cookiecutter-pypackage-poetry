@@ -64,33 +64,39 @@ Ready to contribute? Here's how to set up `{{ cookiecutter.project_name }}` for 
 
     $ git clone git@github.com:your_name_here/{{ cookiecutter.project_slug }}.git
 
-3. Install your local copy into a virtualenv using poetry. Assuming you have poetry installed, this is how you set up your fork for local development::
+3. Install the development tools for your operating system. On Debian or Ubuntu,
+   the documentation toolchain needs::
+
+    $ sudo apt install latexmk texlive-latex-base texlive-latex-recommended texlive-fonts-recommended texlive-latex-extra
+
+   You will also need Poetry and Just. Follow the official Poetry installer
+   instructions for your platform, then install Just with your package manager.
+
+4. Install your local copy into a virtualenv using poetry::
 
     $ cd {{ cookiecutter.project_slug }}/
     $ poetry install
     $ poetry shell
 
-4. Create a branch for local development::
+5. Create a branch for local development::
 
     $ git checkout -b name-of-your-bugfix-or-feature
 
    Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass flake8 and the
+6. When you're done making changes, check that your changes pass Ruff and the
    tests, including testing other Python versions with tox::
 
-    $ flake8 src/{{ cookiecutter.project_slug }} tests
-    $ tox
+    $ just lint
+    $ just test-all
 
-   To get flake8 and tox, just pip install them into your virtualenv.
-
-6. Commit your changes and push your branch to GitHub::
+7. Commit your changes and push your branch to GitHub::
 
     $ git add .
     $ git commit -m "Your detailed description of your changes."
     $ git push origin name-of-your-bugfix-or-feature
 
-7. Submit a pull request through the GitHub website.
+8. Submit a pull request through the GitHub website.
 
 Pull Request Guidelines
 -----------------------
@@ -101,14 +107,8 @@ Before you submit a pull request, check that it meets these guidelines:
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
-3. The pull request should work for Python 2.7, 3.4, 3.5 and 3.6, and for PyPy. Check
-   {% if cookiecutter.use_pypi_deployment_with_travis == "y" -%}
-   https://travis-ci.org/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/pull_requests
-   {%- endif %}
-   {% if cookiecutter.use_pypi_deployment_with_appveyor == "y" -%}
-   https://ci.appveyor.com/project/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}
-   {%- endif %}
-   and make sure that the tests pass for all supported Python versions.
+3. The pull request should work for Python 3.10 and newer supported versions.
+   Run ``just test-all`` before submitting.
 
 Tips
 ----
@@ -131,5 +131,4 @@ Then run::
 $ bump2version patch # possible: major / minor / patch
 $ git push
 $ git push --tags
-
-Travis will then deploy to PyPI if tests pass.
+$ poetry publish

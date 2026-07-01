@@ -6,10 +6,9 @@ Cookiecutter PyPackage
      :target: https://pyup.io/repos/github/audreyr/cookiecutter-pypackage/
      :alt: Updates
 
-.. image:: https://travis-ci.org/audreyr/cookiecutter-pypackage.svg?branch=master
-    :target: https://travis-ci.org/audreyr/cookiecutter-pypackage     
-
-A fork of cookiecutter-pypackage that uses poetry for dependency management, bump2version in place of bumpversion, adds support for appveyor, and allows use of github pages for doc hosting.
+A fork of cookiecutter-pypackage that uses Poetry for dependency management,
+Ruff for linting and formatting, Just for task shortcuts, and supports Python
+3.10 and newer.
 
 * GitHub repo: https://github.com/audreyr/cookiecutter-pypackage/
 * Documentation: https://cookiecutter-pypackage.readthedocs.io/
@@ -18,31 +17,15 @@ A fork of cookiecutter-pypackage that uses poetry for dependency management, bum
 Features
 --------
 
-* Testing setup with ``unittest`` and ``python setup.py test`` or ``pytest``
-* Travis-CI_: Ready for Travis Continuous Integration testing
-* Appveyor_: Ready for Appveyor Continuous Integration testing
-* Tox_ testing: Setup to easily test for Python 2.7, 3.4, 3.5, 3.6, 3.7
+* Testing setup with ``unittest`` or ``pytest``
+* Ruff_ linting and formatting
+* Just_ task shortcuts
+* Tox_ testing for Python 3.10 and newer
 * Sphinx_ docs: Documentation ready for generation with, for example, ReadTheDocs_
 * Bump2version_: Pre-configured version bumping with a single command
-* Auto-release to PyPI_ when you push a new tag to master (optional)
 * Command line interface using Click (optional)
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
-
-Build Status
--------------
-
-Linux:
-
-.. image:: https://img.shields.io/travis/audreyr/cookiecutter-pypackage.svg
-    :target: https://travis-ci.org/audreyr/cookiecutter-pypackage
-    :alt: Linux build status on Travis CI
-
-Windows:
-
-.. image:: https://ci.appveyor.com/api/projects/status/github/audreyr/cookiecutter-pypackage?branch=master&svg=true
-    :target: https://ci.appveyor.com/project/audreyr/cookiecutter-pypackage/branch/master
-    :alt: Windows build status on Appveyor
 
 Quickstart
 ----------
@@ -59,15 +42,12 @@ Generate a Python package project::
 Then:
 
 * Create a repo and put it there.
-* Add the repo to your Travis-CI_ account.
-* Install the dev requirements into a virtualenv. (``poetry install``)
+* Install Poetry and Just.
+* Install the generated project's dependencies with ``poetry install``.
 * Register_ your project with PyPI.
-* Run the Travis CLI command ``travis encrypt MYPYPI_PASS=your_password --add env.global``
-  to encrypt you PyPI password in Travis config and activate automated deployment on PyPI
-  when you push a new tag to master branch.
 * (if using ReadTheDocs)Add the repo to your ReadTheDocs_ account + turn on the ReadTheDocs service hook.
 * (if using GitHub pages)Navigate to settings and make docs folder githubpages
-* Release your package by pushing a new tag to master.
+* Release your package with ``just dist`` and ``poetry publish``.
 * Add a `requirements.txt` file that specifies the packages you will need for
   your project and their versions. For more info see the `pip docs for requirements files`_.
 * Activate your project on `pyup.io`_.
@@ -88,9 +68,9 @@ Similar Cookiecutter Templates
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * `Nekroze/cookiecutter-pypackage`_: A fork of this with a PyTest test runner,
-  strict flake8 checking with Travis/Tox, and some docs and `setup.py` differences.
+  strict style checking with Tox, and some docs and packaging differences.
 
-* `tony/cookiecutter-pypackage-pythonic`_: Fork with py2.7+3.3 optimizations.
+* `tony/cookiecutter-pypackage-pythonic`_: Fork with older Python optimizations.
   Flask/Werkzeug-style test runner, ``_compat`` module and module/doc conventions.
   See ``README.rst`` or the `github comparison view`_ for exhaustive list of
   additions and modifications.
@@ -141,11 +121,11 @@ I also accept pull requests on this, if they're small, atomic, and if they
 make my own packaging experience better.
 
 
-.. _Travis-CI: http://travis-ci.org/
-.. _Appveyor: http://appveyor.com/
 .. _Tox: http://testrun.org/tox/
 .. _Sphinx: http://sphinx-doc.org/
 .. _ReadTheDocs: https://readthedocs.io/
+.. _Ruff: https://docs.astral.sh/ruff/
+.. _Just: https://just.systems/
 .. _`pyup.io`: https://pyup.io/
 .. _Bump2version: https://github.com/c4urself/bump2version
 .. _Punch: https://github.com/lgiordani/punch
